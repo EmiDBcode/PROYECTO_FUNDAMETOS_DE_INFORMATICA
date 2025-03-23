@@ -33,7 +33,7 @@ El propósito no es tanto hacer un programa "bonito" o "eficiente", sino más bi
 
 ## 📦 Contenido del repositorio
 
-- `TPO_GRUPO11_MITA7.Vercion_01`: Código completo del sistema.
+- `TPO_GRUPO11.Vercion_01`: Código completo del sistema.
 - `README.md`: Este archivo con la descripción del proyecto.
 
 ---
