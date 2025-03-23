@@ -1,0 +1,214 @@
+
+# TPO_GRUPO11_
+
+AUTOS = 20
+
+def buscarenlista(lista_control, taxi):
+    """
+    Verifica si un taxi NO está en la lista de control.
+    Devuelve True si no está, False si ya fue ingresado.
+    """
+    for i in range(len(lista_control)):
+        if taxi == lista_control[i]:
+            return False
+    return True
+
+def validacion(taxi, lista_control):
+    """
+    Verifica si un taxi está habilitado en la lista de control.
+    Devuelve True si está, False si no.
+    """
+    for i in range(len(lista_control)):
+        if taxi == lista_control[i]:
+            return True
+    return False
+
+def burbujeo(lista_resumida, lista_fc):
+    """
+    Ordena paralelamente las listas `lista_resumida` y `lista_fc` 
+    según facturación total de mayor a menor (método burbuja).
+    """
+    largo = len(lista_resumida)
+    desordenada = True
+    while desordenada:
+        desordenada = False
+        for i in range(largo - 1):
+            if lista_fc[i] < lista_fc[i + 1]:
+                aux = lista_fc[i]
+                lista_fc[i] = lista_fc[i + 1]
+                lista_fc[i + 1] = aux
+
+                aux = lista_resumida[i]
+                lista_resumida[i] = lista_resumida[i + 1]
+                lista_resumida[i + 1] = aux
+
+                desordenada = True
+
+def eliminar_duplicados(lista_taxi2):
+    """
+    Elimina taxis duplicados de una lista.
+    """
+    i = 0
+    while i < len(lista_taxi2):
+        j = len(lista_taxi2) - 1
+        while j > i:
+            if lista_taxi2[j] == lista_taxi2[i]:
+                del lista_taxi2[j]
+            j -= 1
+        i += 1
+    return lista_taxi2
+
+def lista_suma_fact(lista_sin_repetidos, lista_taxi, lista_cobro):
+    """
+    Calcula la suma total facturada por cada taxi en lista_sin_repetidos.
+    """
+    lista_suma = []
+    for i in range(len(lista_sin_repetidos)):
+        taxi_actual = lista_sin_repetidos[i]
+        suma = 0
+        for t in range(len(lista_taxi)):
+            if taxi_actual == lista_taxi[t]:
+                suma += lista_cobro[t]
+        lista_suma.append(suma)
+    return lista_suma
+
+def lista_cant_viajes(lista_sin_repetidos, lista_taxi):
+    """
+    Devuelve una lista con la cantidad de viajes realizados por cada taxi.
+    """
+    lista_cant = []
+    for i in range(len(lista_sin_repetidos)):
+        taxi_actual = lista_sin_repetidos[i]
+        cant = 0
+        for t in range(len(lista_taxi)):
+            if taxi_actual == lista_taxi[t]:
+                cant += 1
+        lista_cant.append(cant)
+    return lista_cant
+
+def mayor_facturacion(lista_suma):
+    """
+    Devuelve la posición del taxi con mayor facturación.
+    """
+    mayor = lista_suma[0]
+    pos = 0
+    for i in range(len(lista_suma)):
+        if lista_suma[i] >= mayor:
+            mayor = lista_suma[i]
+            pos = i
+    return pos
+
+def copiar_y_ordenar_lista(lista_taxi):
+    """
+    Copia y ordena la lista de taxis de menor a mayor.
+    """
+    copia = []
+    for t in range(len(lista_taxi)):
+        copia.append(lista_taxi[t])
+    for i in range(len(copia) - 1):
+        for j in range(i + 1, len(copia)):
+            if copia[i] > copia[j]:
+                aux = copia[i]
+                copia[i] = copia[j]
+                copia[j] = aux
+    return copia
+
+def taxis_mayor_viajes(lista_ordenada):
+    """
+    Devuelve una lista con los taxis que realizaron más viajes.
+    """
+    contador = 1
+    mayor_cant = 0
+    lista_resultado = []
+    ultimo = lista_ordenada[len(lista_ordenada) - 1]
+
+    for i in range(len(lista_ordenada) - 1):
+        if lista_ordenada[i] == lista_ordenada[i + 1]:
+            contador += 1
+        else:
+            if contador == mayor_cant:
+                lista_resultado.append(lista_ordenada[i])
+            elif contador > mayor_cant:
+                lista_resultado = []
+                mayor_cant = contador
+                lista_resultado.append(lista_ordenada[i])
+            contador = 1
+        if lista_ordenada[i + 1] == ultimo and contador == mayor_cant:
+            lista_resultado.append(lista_ordenada[i + 1])
+    return lista_resultado
+
+def total_facturado(lista_cobro):
+    """
+    Suma total de lo facturado por todos los taxis.
+    """
+    total = 0
+    for i in range(len(lista_cobro)):
+        total += lista_cobro[i]
+    return total
+
+# ---- CODIGO PRINCIAPL ----
+
+print("# Bienvenido al sistema de control diario de radio taxi #\n")
+print("## Ingrese el N° de Licencia (tres dígitos, ej: 509) y luego el monto facturado ##")
+print("### Use (-1) para finalizar la carga ###\n")
+print("#### Se habilitarán las primeras", AUTOS, "licencias ####\n")
+
+listataxi = []
+listacobro = []
+listacontrol = []
+
+taxi = int(input("Ingresar el número de taxi a registrar: "))
+
+while taxi != -1:
+    if taxi >= 100 and taxi <= 999:
+        if len(listacontrol) < AUTOS and buscarenlista(listacontrol, taxi):
+            listacontrol.append(taxi)
+
+        if validacion(taxi, listacontrol):
+            listataxi.append(taxi)
+            cobro = float(input("Ingrese el monto cobrado por el viaje del taxi: "))
+            listacobro.append(cobro)
+        else:
+            print("ERROR. Taxi no habilitado.")
+        taxi = int(input("Ingresar el número de taxi a registrar: "))
+    else:
+        taxi = int(input("Número inválido. Ingrese un número de 3 dígitos: "))
+
+print()
+
+if len(listataxi) == 0:
+    print("Programa cerrado sin carga de datos.")
+else:
+    print("-------------------------------------------------------------------------------------------")
+    total = total_facturado(listacobro)
+    print("El Total Facturado por la empresa fue de $", total)
+    print("-------------------------------------------------------------------------------------------")
+    print("La flota realizó en total:", len(listataxi), "viajes.")
+
+    lista_ordenada = copiar_y_ordenar_lista(listataxi)
+    print("-------------------------------------------------------------------------------------------")
+    if len(listataxi) == 1:
+        print("La unidad que más viajes realizó fue:", listataxi[0])
+    else:
+        lista_mayores = taxis_mayor_viajes(lista_ordenada)
+        print("Unidad/es con más viajes:", lista_mayores)
+    print("-------------------------------------------------------------------------------------------")
+
+    lista_sin_repetidos = eliminar_duplicados(lista_ordenada)
+    lista_suma = lista_suma_fact(lista_sin_repetidos, listataxi, listacobro)
+    lista_cant = lista_cant_viajes(lista_sin_repetidos, listataxi)
+
+    for i in range(len(lista_sin_repetidos)):
+        promedio = lista_suma[i] / lista_cant[i]
+        print("Promedio facturado del vehículo", lista_sin_repetidos[i], "es $", promedio)
+
+    print("-------------------------------------------------------------------------------------------")
+    pos_mayor = mayor_facturacion(lista_suma)
+    print("La unidad con mayor recaudación fue:", lista_sin_repetidos[pos_mayor])
+    print("-------------------------------------------------------------------------------------------")
+
+    burbujeo(lista_sin_repetidos, lista_suma)
+    for i in range(len(lista_sin_repetidos)):
+        print("Unidad:", lista_sin_repetidos[i], "facturó $", lista_suma[i])
+
+    print("-------------------------------------------------------------------------------------------")
